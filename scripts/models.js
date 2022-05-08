@@ -89,7 +89,6 @@ function createPlaneVertexArray(gl, position_attrib, normal_attrib, texcoord_att
     return vertex_array;
 }
 
-
 function createCubeVertexArray(gl, position_attrib, normal_attrib, texcoord_attrib) {
     // create a new Vertex Array Object
     let vertex_array = gl.createVertexArray();
@@ -347,7 +346,7 @@ function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     console.log(texcoords);
     console.log(indices);
     */
-    
+
     // create buffer to store vertex positions (3D points)
     let vertex_position_buffer = gl.createBuffer();
     // set newly created buffer as the active one we are modifying
@@ -408,9 +407,10 @@ function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_at
 }
 
 
-// TODO: create a custom 3D model
-//         - minimum of 16 vertices
-//         - Triangular prism with 5 faces
+// The goal for this custom model was to implement a cube of which one face (the top face) is rotated an angle phi relative
+// to the bottom face. By defining the amount of "stacks" we can effectively make this rotation appear smoother by
+// partioning the 3D model into multiple offset rectangular prisms. Because we know which stack we are on, we also know which 
+// seciton of the texture to pull from.
 function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_attrib) {
     // create a new Vertex Array Object
     let vertex_array = gl.createVertexArray();
@@ -418,16 +418,18 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     gl.bindVertexArray(vertex_array);
     
     // calculate vertices, normals, texture coordinate, and faces
-    let stacks = 1;
-    let polar_coords = [Math.PI/4, 3*Math.PI/4, 5*Math.PI/4, 7*Math.PI/4]; // base coordinates of vertices for bottom face
+    let stacks = 10;
+    let polar_coords = [5*Math.PI/4, 7*Math.PI/4, Math.PI/4, 3*Math.PI/4]; // base coordinates of vertices for bottom face
     //let polar_matrix = Math.matrix(polar_coords);
 
+    // Define our model variables
     let offset = Math.PI / 4; // how far we wanted to rotate top stack relative to bottom face. Each stack between will form a gradient
-    let phi = 0;
-    let delta_phi = offset / stacks;
-    let height = 1;
-    let delta_height = height / stacks;
+    let phi = 0; // Starting angle
+    let delta_phi = offset / stacks; // Offset for one stack
+    let height = 1; // Side length of offset cube
+    let delta_height = height / stacks; // Stack height
     
+    // Empty arrays and initialize index counter
     let vertices = [];
     let normals = [];
     let texcoords = [];
@@ -436,51 +438,142 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
 
     // Assign vertices, normals, and texcoords
     for (let i = 0; i <= stacks; i++) {
-        let vertex_polar = polar_coords;
-        //normal_polar = Math.mod(normal_polar, 2*Math.PI);
-        //let texcoords_polar;
 
+        // Bottom face
         if (i == 0) {
-            indices.push(0,1,2,2,3,0); // Push bottom face
-        }
+            for (let j = 0; j <= 3; j++) {
+                // Polar to cartesian
+                let vx = Math.cos(polar_coords[j])/Math.sqrt(2);
+                let vy = Math.sin(polar_coords[j])/Math.sqrt(2);
+                let vz = -height/2;
 
-        for (let j = 0; j < polar_coords.length; j++) {
+                let nx = 0;
+                let ny = 0;
+                let nz = -1;
 
-            let vx = Math.cos(vertex_polar[j]);
-            let vy = Math.sin(vertex_polar[j]);
-            let vz = 0 + i*delta_height;
+                // Vertices
+                vertices.push(vx, vy, vz);
 
-            let nx = Math.cos(vertex_polar[j] + Math.PI/4);
-            let ny = Math.sin(vertex_polar[j] + Math.PI/4);
-            let nz = 0;
+                // Normals
+                normals.push(nx, ny, nz);
 
-            vertices.push(vx, vy, vz);
-            normals.push(nx, ny, nz);
+                // Increment the current index
+                curr_index++;
+            }
+
+            // Indices
+            indices.push(0,1,2,0,2,3); // push bottom face
+
+            // Texcoords
             texcoords.push( 0.0,  0.0, // temporary tex coords until fixed
                             1.0,  0.0,
                             1.0,  1.0,
-                            0.0,  1.0
-            );
-            
-            if (i < stacks) {
-                indices.push(curr_index, ((curr_index+1) % 4)+i*4, curr_index+4); // btm side triangles
-                if (j != 3) {
-                    indices.push(((curr_index+1) % 4)+i*4, curr_index+4, curr_index+5); // top side triangles
-                } else {
-                    indices.push(((curr_index+1) % 4)+i*4, curr_index+4, curr_index+1); // top side triangles
-                }                
+                            0.0,  1.0);
+        }
+
+        // Side face polys
+        if (i < stacks) {
+            for (let j = 0; j <= 3; j++) {
+                // Polar to cartesian
+                
+                // Bottom left
+                let vx = Math.cos(polar_coords[j])/Math.sqrt(2);
+                let vy = Math.sin(polar_coords[j])/Math.sqrt(2);
+                let vz = -height/2 + i*delta_height;
+                vertices.push(vx, vy, vz);
+                let nx = Math.cos(polar_coords[j] + Math.PI/4);
+                let ny = Math.sin(polar_coords[j] + Math.PI/4);
+                let nz = 0;
+                normals.push(nx, ny, nz);
+                indices.push(curr_index);
+                curr_index++; // Increment the current index
+
+                // Bottom right
+                vx = Math.cos(polar_coords[(j+1)%4])/Math.sqrt(2);
+                vy = Math.sin(polar_coords[(j+1)%4])/Math.sqrt(2);
+                vz = -height/2 + i*delta_height;
+                vertices.push(vx, vy, vz);
+                nx = Math.cos(polar_coords[j] + Math.PI/4);
+                ny = Math.sin(polar_coords[j] + Math.PI/4);
+                nz = 0;
+                normals.push(nx, ny, nz);
+                indices.push(curr_index);
+                curr_index++; // Increment the current index
+
+                // Top right
+                vx = Math.cos(polar_coords[(j+1)%4] + delta_phi)/Math.sqrt(2);
+                vy = Math.sin(polar_coords[(j+1)%4] + delta_phi)/Math.sqrt(2);
+                vz = -height/2 + (i+1)*delta_height;
+                vertices.push(vx, vy, vz);
+                nx = Math.cos(polar_coords[j] + Math.PI/4);
+                ny = Math.sin(polar_coords[j] + Math.PI/4);
+                nz = 0;
+                normals.push(nx, ny, nz);
+                indices.push(curr_index);  
+                indices.push(curr_index-2);  // push starting index for face 
+                indices.push(curr_index);  // second index
+                curr_index++; // Increment the current index
+
+                // Top left
+                vx = Math.cos(polar_coords[j] + delta_phi)/Math.sqrt(2);
+                vy = Math.sin(polar_coords[j] + delta_phi)/Math.sqrt(2);
+                vz = -height/2 + (i+1)*delta_height;
+                vertices.push(vx, vy, vz);
+                nx = Math.cos(polar_coords[j] + Math.PI/4);
+                ny = Math.sin(polar_coords[j] + Math.PI/4);
+                nz = 0;
+                normals.push(nx, ny, nz); 
+                indices.push(curr_index);              
+                curr_index++; // Increment the current index
+
+                // Texcoords
+                texcoords.push( 0.0,  i*height/stacks, // temporary tex coords until fixed
+                                1.0,  i*height/stacks,
+                                1.0,  (i+1)*height/stacks,
+                                0.0,  (i+1)*height/stacks); 
+                
+                //polar_coords[j] = polar_coords[j] % (2*Math.PI); // trim to range 0 to 2 pi
             }
 
-            polar_coords[j] = polar_coords[j] + delta_phi;// Add offset for next stack
-            polar_coords[j] = polar_coords[j] % (2*Math.PI);// trim to range 0 to 2 pi
-            curr_index++;
+            // Offset for next stack
+            for(let ind=0;ind<polar_coords.length;ind++){
+                polar_coords[ind] = polar_coords[ind] + delta_phi
+            }
         }
 
+        // Top face
         if (i == stacks) {
-            indices.push(curr_index-1, curr_index-2, curr_index-3, curr_index-1, curr_index-3, curr_index-4); // push bottom face
+            for (let j = 0; j <= 3; j++) {
+                // Polar to cartesian
+                let vx = Math.cos(polar_coords[j])/Math.sqrt(2);
+                let vy = Math.sin(polar_coords[j])/Math.sqrt(2);
+                let vz = height/2;
+
+                let nx = 0;
+                let ny = 0;
+                let nz = 1;
+
+                // Vertices
+                vertices.push(vx, vy, vz);
+
+                // Normals
+                normals.push(nx, ny, nz);
+
+                // Increment the current index
+                curr_index++;
+            }
+
+            // Indices
+            indices.push(curr_index-4, curr_index-3, curr_index-2, curr_index-4, curr_index-2, curr_index-1); // push top face
+
+            // Texcoords
+            texcoords.push( 0.0,  0.0, // temporary tex coords until fixed
+                            1.0,  0.0,
+                            1.0,  1.0,
+                            0.0,  1.0);
         }
     }
-    
+
     /*
     console.log(vertices);
     console.log(normals);

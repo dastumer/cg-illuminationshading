@@ -1,9 +1,9 @@
 {
     "background": [0.1, 0.1, 0.1],
     "camera": {
-        "position": [0.0, 12.5, 0.0],
-        "target": [0.0, 0.0, 0.0],
-        "up": [-1.0, 0.0, 0.0]
+        "position": [-8.0, 1.8, 8.0],
+        "target": [0.0, 1.8, 0.0],
+        "up": [0.0, 1.0, 0.0]
     },
     "models": [
         {
@@ -48,7 +48,22 @@
                 "specular": [0.0, 0.0, 0.0],
                 "shininess": 1
             },
-            "center": [2.0, 1.5, 1.0],
+            "center": [2.0, 1.5, 0.0],
+            "size": [1.0, 1.0, 1.0]
+        },
+        {
+            "type": "cube",
+            "shader": "texture",
+            "texture": {
+                "url": "images/Crate.jpg",
+                "scale": [1, 1]
+            },
+            "material": {
+                "color": [1.0, 1.0, 1.0],
+                "specular": [0.0, 0.0, 0.0],
+                "shininess": 1
+            },
+            "center": [2.0, 1.5, -2.0],
             "size": [1.0, 1.0, 1.0]
         }
     ],
