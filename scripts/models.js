@@ -418,7 +418,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     gl.bindVertexArray(vertex_array);
     
     // calculate vertices, normals, texture coordinate, and faces
-    let stacks = 10;
+    let stacks = 100;
     let polar_coords = [5*Math.PI/4, 7*Math.PI/4, Math.PI/4, 3*Math.PI/4]; // base coordinates of vertices for bottom face
     //let polar_matrix = Math.matrix(polar_coords);
 
