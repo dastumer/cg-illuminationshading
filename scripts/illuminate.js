@@ -224,12 +224,26 @@ class GlApp {
             // Set uniforms
             if (this.algorithm != 'emissive'){
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_ambient, this.scene.light.ambient);
-                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_position, this.scene.light.point_lights[0].position);
-                this.gl.uniform3fv(this.shader[selected_shader].uniforms.light_color, this.scene.light.point_lights[0].color);
+                let point_positions = new Float32Array(this.scene.light.point_lights.length*3);
+                let point_colors = new Float32Array(this.scene.light.point_lights.length*3);
+                for(let j = 0; j<this.scene.light.point_lights.length; j++){
+                    for(let k=0; k<3; k++){
+                        point_positions[3*j+k] = this.scene.light.point_lights[j].position[k];
+                        point_colors[3*j+k] = this.scene.light.point_lights[j].color[k];
+                    }
+                }
+                console.log(point_positions);
+                console.log(point_colors);
+                console.log(this.scene.light.point_lights);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms["light_position[0]"], point_positions);
+                this.gl.uniform3fv(this.shader[selected_shader].uniforms["light_color[0]"], point_colors);
+
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position);
                 this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess);
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular);
+                console.log(this.shader[selected_shader]);
             }
+            
 
             this.gl.bindVertexArray(this.vertex_array[this.scene.models[i].type]);     // Select our triangle 'vertex array object' for drawing
             this.gl.drawElements(this.gl.TRIANGLES, this.vertex_array[this.scene.models[i].type].face_index_count, this.gl.UNSIGNED_SHORT, 0);     // Draw the selected 'vertex array object' (using triangles)
