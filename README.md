@@ -1,4 +1,6 @@
 # 3D Illumination and Shading
+NOTE: Crate texture sourced from: https://raw.githubusercontent.com/sessamekesh/IndigoCS-webgl-tutorials/master/03%20-%20Textured%20Cube/crate.png. We do not reserve any rights to this texture.
+
 
 ## Task
 Implement the standard computer graphics illumination model using both Gouraud and Phong shading. You will use HTML's WebGL2 API.

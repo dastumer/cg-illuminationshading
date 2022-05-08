@@ -38,11 +38,15 @@
         },
         {
             "type": "custom",
-            "shader": "color",
+            "shader": "texture",
+            "texture": {
+                "url": "images/Crate.jpg",
+                "scale": [1, 1]
+            },
             "material": {
-                "color": [0.392, 0.176, 0.569],
-                "specular": [1.0, 1.0, 1.0],
-                "shininess": 4
+                "color": [1.0, 1.0, 1.0],
+                "specular": [0.0, 0.0, 0.0],
+                "shininess": 1
             },
             "center": [2.0, 1.5, 1.0],
             "size": [1.0, 1.0, 1.0]

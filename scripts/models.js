@@ -267,12 +267,12 @@ function createCubeVertexArray(gl, position_attrib, normal_attrib, texcoord_attr
         20, 21, 22,     20, 22, 23    // Left
     ];
 
-    
+    /*
     console.log(vertices);
     console.log(normals);
     console.log(texcoords);
     console.log(indices);
-    
+    */
 
     // store array of vertex indices in the vertex_index_buffer
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
@@ -284,7 +284,7 @@ function createCubeVertexArray(gl, position_attrib, normal_attrib, texcoord_attr
 
     // store the number of vertices used for entire model (number of faces * 3) // should be 
     vertex_array.face_index_count = indices.length;
-    console.log("Cube: "+vertex_array.face_index_count);
+    //console.log("Cube: "+vertex_array.face_index_count);
 
     // return created Vertex Array Object
     return vertex_array;
@@ -341,12 +341,12 @@ function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         }
     }
 
-    
+    /*
     console.log(vertices);
     console.log(normals);
     console.log(texcoords);
     console.log(indices);
-    
+    */
     
     // create buffer to store vertex positions (3D points)
     let vertex_position_buffer = gl.createBuffer();
@@ -401,7 +401,7 @@ function createSphereVertexArray(gl, position_attrib, normal_attrib, texcoord_at
 
     // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
-    console.log("Sphere: "+vertex_array.face_index_count);
+    //console.log("Sphere: "+vertex_array.face_index_count);
 
     // return created Vertex Array Object
     return vertex_array;
@@ -418,7 +418,7 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
     gl.bindVertexArray(vertex_array);
     
     // calculate vertices, normals, texture coordinate, and faces
-    let stacks = 5;
+    let stacks = 1;
     let polar_coords = [Math.PI/4, 3*Math.PI/4, 5*Math.PI/4, 7*Math.PI/4]; // base coordinates of vertices for bottom face
     //let polar_matrix = Math.matrix(polar_coords);
 
@@ -481,10 +481,12 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
         }
     }
     
+    /*
     console.log(vertices);
     console.log(normals);
     console.log(texcoords);
     console.log(indices);    
+    */
 
     // create buffer to store vertex positions (3D points)
     let vertex_position_buffer = gl.createBuffer();
@@ -535,7 +537,12 @@ function createCustomVertexArray(gl, position_attrib, normal_attrib, texcoord_at
 
     // store the number of vertices used for entire model (number of faces * 3)
     vertex_array.face_index_count = indices.length;
-    console.log("Custom: "+vertex_array.face_index_count);
+    
+    // Log information for user:
+    console.log("Custom model vertices: "+vertices.length);
+    console.log("Custom model normals: "+normals.length);
+    console.log("Custom model texcoords: "+texcoords.length);
+    console.log("Custom model indices: "+indices.length);
 
     // return created Vertex Array Object
     return vertex_array;
