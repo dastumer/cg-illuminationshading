@@ -233,16 +233,16 @@ class GlApp {
                         point_colors[3*j+k] = this.scene.light.point_lights[j].color[k];
                     }
                 }
-                console.log(point_positions);
+                /*console.log(point_positions);
                 console.log(point_colors);
-                console.log(this.scene.light.point_lights);
+                console.log(this.scene.light.point_lights);*/
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms["light_position[0]"], point_positions);
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms["light_color[0]"], point_colors);
 
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms.camera_position, this.scene.camera.position);
                 this.gl.uniform1f(this.shader[selected_shader].uniforms.material_shininess, this.scene.models[i].material.shininess);
                 this.gl.uniform3fv(this.shader[selected_shader].uniforms.material_specular, this.scene.models[i].material.specular);
-                console.log(this.shader[selected_shader]);
+                //console.log(this.shader[selected_shader]);
             }
             
 
