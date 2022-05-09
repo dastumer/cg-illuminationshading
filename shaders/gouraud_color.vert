@@ -46,7 +46,7 @@ void main() {
     diffuse = vec3(0.0, 0.0, 0.0);
     specular = vec3(0.0, 0.0, 0.0);
     
-    for(int i=0; i<2; i++){
+    for(int i=0; i<10; i++){
         vec3 N = normalize(world_vertex_normal);
         vec3 L = light_position[i] - world_vertex_position;
         L = normalize(L);

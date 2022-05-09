@@ -21,7 +21,7 @@ void main() {
     vec3 diffuse = vec3(0.0, 0.0, 0.0);
     vec3 specular = vec3(0.0, 0.0, 0.0);
     
-    for(int i=0; i<2; i++){
+    for(int i=0; i<10; i++){
         // Peter implemented FragColor
         vec3 N = normalize(frag_normal);
         vec3 L = light_position[i] - frag_pos;
